@@ -1,16 +1,12 @@
 package La.OpenTecLab.Training.backend.restController;
 
-import La.OpenTecLab.Training.backend.entity.ImageEntity;
-import La.OpenTecLab.Training.backend.model.ImageModel;
-import La.OpenTecLab.Training.backend.model.ResponseModel;
-import La.OpenTecLab.Training.backend.model.UserModel;
+import La.OpenTecLab.Training.backend.entity.Li4dEntity;
+import La.OpenTecLab.Training.backend.entity.UserEntity;
+import La.OpenTecLab.Training.backend.model.*;
 import La.OpenTecLab.Training.backend.service.BackendService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,18 +18,29 @@ public class BackendRestController {
     public BackendRestController(BackendService backendServer) {
         this.backendServer = backendServer;
     }
-    @GetMapping("/find/all/image")
-    public List<ImageModel> findAllImage(){return this.backendServer.findAllImage();}
-    @GetMapping("/find/image")
-    public ResponseEntity<?> findImage(@RequestParam String name)throws IOException {
-        byte[] image = this.backendServer.findImage(name);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/jpg")).body(image);}
-    @GetMapping("/save/all")
-    public ImageEntity insert(){
-        return this.backendServer.insertImage();
+
+    @PostMapping("/insert/li4d")
+    public ResponseModel<Void> insertLi4d(@RequestBody Li4dModel model){return this.backendServer.insertLi4d(model);}
+
+    @PostMapping("/insert/choices")
+    public ResponseModel<Void> insertChoices(@RequestBody List<ChoiceModel> modelList){return this.backendServer.insertChoices(modelList);}
+
+    @PostMapping("/find/user")
+    public ResponseModel<Void> findUser(@RequestBody UserModel model){return this.backendServer.insertUser(model);}
+
+    @PostMapping("/userData")
+    public ResponseModel<Void> userData(@RequestBody DataModel model){
+        return this.backendServer.userData(model);
     }
 
-    @PostMapping("/insert/user")
-    public ResponseModel insertUser(@RequestBody UserModel model){return this.backendServer.insertUser(model);}
+    @GetMapping("/reset/response")
+    public ResponseModel<Void> resetResponse(@RequestParam String userEmail){
+        return this.backendServer.resetResponse(userEmail);
+    }
+
+    @GetMapping("/find/all/choices")
+    public List<ChoiceModel> findAllChoices(){
+        return this.backendServer.findAllChoices();
+    }
 
 }

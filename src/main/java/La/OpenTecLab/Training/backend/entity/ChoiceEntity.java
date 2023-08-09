@@ -1,20 +1,20 @@
 package La.OpenTecLab.Training.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "choices")
+public class ChoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
-    private String userEmail;
+    private Integer choiceId;
+    private String choiceNameTh;
+    private String choiceNameEn;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="li4dId")
     @JsonIgnore
-    private Li4dEntity li4du;
+    private Li4dEntity li4dc;
 }

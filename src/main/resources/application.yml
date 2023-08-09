@@ -1,0 +1,9 @@
+
+spring:
+  datasource:
+    username: admin
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3305/dataStore
+server:
+  port: 8000
