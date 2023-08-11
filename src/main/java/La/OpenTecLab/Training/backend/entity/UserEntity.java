@@ -17,6 +17,7 @@ public class UserEntity {
     private String userEmail;
     private String userImage;
     private String userAge;
+    private String userGender;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="li4dId")
     @JsonIgnore

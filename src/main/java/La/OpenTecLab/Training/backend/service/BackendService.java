@@ -10,6 +10,7 @@ import La.OpenTecLab.Training.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +107,7 @@ public class BackendService {
                 entity.setUserLastName(model.getUserLastName());
                 entity.setUserImage(model.getUserImage());
                 entity.setUserAge(model.getUserAge());
+                entity.setUserGender(model.getUserGender());
                 this.userRepository.save(entity);
             }
         }catch (Exception ex){
@@ -124,6 +126,38 @@ public class BackendService {
             m.setChoiceId(e.getChoiceId());
             m.setChoiceNameTh(e.getChoiceNameTh());
             m.setChoiceNameEn(e.getChoiceNameEn());
+            models.add(m);
+        }
+        return models;
+    }
+
+    public List<Li4dModel> findAllLi4d() {
+        List<Li4dEntity> list = this.li4dRepository.findAll();
+        List<Li4dModel> models = new ArrayList<>();
+        for (Li4dEntity e:list){
+            Li4dModel m = new Li4dModel();
+            m.setLi4dId(e.getLi4dId());
+            m.setLi4dName(e.getLi4dName());
+            m.setLi4dDescriptionTh(e.getLi4dDescriptionTh());
+            m.setLi4dDescriptionEn(e.getLi4dDescriptionEn());
+            models.add(m);
+        }
+        return models;
+    }
+
+    public List<UserModel> findAllUsers(){
+        List<UserEntity> list = this.userRepository.findAll();
+        List<UserModel> models = new ArrayList<>();
+        for (UserEntity e:list){
+            UserModel m = new UserModel();
+            m.setUserId(e.getUserId());
+            m.setUserFirstName(e.getUserFirstName());
+            m.setUserLastName(e.getUserLastName());
+            m.setUserEmail(e.getUserEmail());
+            m.setUserAge(e.getUserAge());
+            m.setUserImage(e.getUserImage());
+            m.setUserGender(e.getUserGender());
+            m.setLi4dId(e.getLi4du().getLi4dId());
             models.add(m);
         }
         return models;
@@ -254,5 +288,38 @@ public class BackendService {
         return res;
     }
 
+
+    public List<PercentLi4dModel> findAllPercentResponse() {
+        float bull=0,rat=0,bear=0,falcon=0;
+        DecimalFormat df = new DecimalFormat("#,##");
+        List<UserEntity> entityList = this.userRepository.findAll();
+        for (UserEntity e:entityList){
+            if(e.getLi4du().getLi4dName().equals("Bull")){bull++;}
+            if(e.getLi4du().getLi4dName().equals("Rat")){rat++;}
+            if(e.getLi4du().getLi4dName().equals("Bear")){bear++;}
+            if(e.getLi4du().getLi4dName().equals("Falcon")){falcon++;}
+        }
+
+        List<PercentLi4dModel> models = new ArrayList<>();
+        PercentLi4dModel bullModel = new PercentLi4dModel();
+        PercentLi4dModel ratModel = new PercentLi4dModel();
+        PercentLi4dModel bearModel = new PercentLi4dModel();
+        PercentLi4dModel falconModel = new PercentLi4dModel();
+
+        bullModel.setName("Bull");
+        bullModel.setPercent(df.format((bull * 100) / entityList.size())+"%");
+        models.add(bullModel);
+        ratModel.setName("Rat");
+        ratModel.setPercent(df.format((rat * 100) / entityList.size())+"%");
+        models.add(ratModel);
+        bearModel.setName("Bear");
+        bearModel.setPercent(df.format((bear * 100) / entityList.size())+"%");
+        models.add(bearModel);
+        falconModel.setName("Falcon");
+        falconModel.setPercent(df.format((falcon * 100) / entityList.size())+"%");
+        models.add(falconModel);
+
+        return models;
+    }
 
 }

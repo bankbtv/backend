@@ -11,4 +11,6 @@ public class UserModel {
     private String userEmail;
     private String userImage;
     private String userAge;
+    private String userGender;
+    private Integer li4dId;
 }
