@@ -6,6 +6,9 @@ import lombok.Data;
 @Data
 public class UserModel {
     private Integer userId;
+    private String userFirstName;
+    private String userLastName;
     private String userEmail;
-    private Integer li4dId;
+    private String userImage;
+    private String userAge;
 }

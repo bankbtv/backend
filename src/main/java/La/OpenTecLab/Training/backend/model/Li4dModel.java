@@ -11,6 +11,8 @@ public class Li4dModel {
 
     private Integer li4dId;
     private String li4dName;
+    private String li4dDescriptionTh;
+    private String li4dDescriptionEn;
     private List<ChoiceEntity> choices;
     private List<UserEntity> user;
 }

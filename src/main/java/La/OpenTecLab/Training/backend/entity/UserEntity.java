@@ -12,7 +12,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+    private String userFirstName;
+    private String userLastName;
     private String userEmail;
+    private String userImage;
+    private String userAge;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="li4dId")
     @JsonIgnore

@@ -36,6 +36,8 @@ public class BackendService {
             if (optional.isEmpty()){
             Li4dEntity e = new Li4dEntity();
             e.setLi4dName(model.getLi4dName());
+            e.setLi4dDescriptionEn(model.getLi4dDescriptionEn());
+            e.setLi4dDescriptionTh(model.getLi4dDescriptionTh());
             this.li4dRepository.save(e);}else {
                 res.setDescription("haded it before");
                 res.setStatus(403);
@@ -100,6 +102,10 @@ public class BackendService {
             }else {
                 UserEntity entity = new UserEntity();
                 entity.setUserEmail(model.getUserEmail());
+                entity.setUserFirstName(model.getUserFirstName());
+                entity.setUserLastName(model.getUserLastName());
+                entity.setUserImage(model.getUserImage());
+                entity.setUserAge(model.getUserAge());
                 this.userRepository.save(entity);
             }
         }catch (Exception ex){
@@ -216,7 +222,7 @@ public class BackendService {
 
             }else {
                 res.setStatus(403);
-                res.setDescription("The user's email is invalid.");
+                res.setDescription(model.toString());
             }
         }catch (Exception ex){
             ex.printStackTrace();
