@@ -1,6 +1,5 @@
 package La.OpenTecLab.Training.backend.restController;
 
-import La.OpenTecLab.Training.backend.entity.Li4dEntity;
 import La.OpenTecLab.Training.backend.model.*;
 import La.OpenTecLab.Training.backend.service.BackendService;
 import org.springframework.web.bind.annotation.*;
