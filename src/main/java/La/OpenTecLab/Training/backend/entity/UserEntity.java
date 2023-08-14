@@ -1,25 +1,29 @@
 package La.OpenTecLab.Training.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+import java.util.List;
+
 @Entity
 @Data
-@Table(name = "user")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
-    private String userFirstName;
-    private String userLastName;
-    private String userEmail;
-    private String userImage;
-    private String userAge;
-    private String userGender;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="li4dId")
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String image;
+    private Date birthdays;
+    private String gender;
+    @ManyToOne
+    @JoinColumn(name="id")
     @JsonIgnore
-    private Li4dEntity li4du;
+    private CategoryEntity categoryU;
+    @OneToMany(mappedBy = "userH", fetch= FetchType.EAGER)
+    private List<HistoryEntity> historyList;
 }

@@ -3,7 +3,7 @@ package La.OpenTecLab.Training.backend.model;
 import lombok.Data;
 
 @Data
-public class PercentLi4dModel {
+public class OverviewModel {
     private String name;
     private String percent;
 }

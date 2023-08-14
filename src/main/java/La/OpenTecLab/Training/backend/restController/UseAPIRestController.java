@@ -17,26 +17,21 @@ public class UseAPIRestController {
         this.backendServer = backendServer;
     }
 
-    @PostMapping("/find/user")
-    public ResponseModel<Void> findUser(@RequestBody UserModel model){return this.backendServer.insertUser(model);}
+    @PostMapping("/user/login")
+    public ResponseModel<Void> userLogin(@RequestBody UserModel model){return this.backendServer.userLogin(model);}
 
-    @PostMapping("/userData")
-    public ResponseModel<Void> userData(@RequestBody DataModel model){
-        return this.backendServer.userData(model);
-    }
-
-    @GetMapping("/reset/response")
-    public ResponseModel<Void> resetResponse(@RequestParam String userEmail){return this.backendServer.resetResponse(userEmail);}
+    @GetMapping("/get/all/user/history")
+    public List<HistoryModel> getAllUserHistory(@RequestParam String email){return this.backendServer.getAllUserHistory(email);}
 
     @GetMapping("/find/all/choices")
     public List<ChoiceModel> findAllChoices(){
         return this.backendServer.findAllChoices();
     }
 
-    @GetMapping("/find/percent/response")
-    public List<PercentLi4dModel> findAllPercentResponse(){return this.backendServer.findAllPercentResponse();}
+    @PostMapping("/get/result")
+    public ResponseModel<Void> getResult(@RequestBody DataModel model){return this.backendServer.getResult(model);}
 
-    @GetMapping("/find/all/li4d")
-    public List<Li4dModel> findAllLi4d(){return this.backendServer.findAllLi4d();}
+    @GetMapping("/get/overview")
+    public List<OverviewModel> getOverview(){return this.backendServer.getOverview();}
 
 }

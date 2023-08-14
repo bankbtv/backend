@@ -1,11 +1,12 @@
 package La.OpenTecLab.Training.backend.service;
 
+import La.OpenTecLab.Training.backend.entity.CategoryEntity;
 import La.OpenTecLab.Training.backend.entity.ChoiceEntity;
-import La.OpenTecLab.Training.backend.entity.Li4dEntity;
+import La.OpenTecLab.Training.backend.entity.HistoryEntity;
 import La.OpenTecLab.Training.backend.entity.UserEntity;
 import La.OpenTecLab.Training.backend.model.*;
+import La.OpenTecLab.Training.backend.repository.CategoryRepository;
 import La.OpenTecLab.Training.backend.repository.ChoiceRepository;
-import La.OpenTecLab.Training.backend.repository.Li4dRepository;
 import La.OpenTecLab.Training.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,94 +21,37 @@ import java.util.Optional;
 public class BackendService {
     private final ChoiceRepository choiceRepository;
     private final UserRepository userRepository;
-    private final Li4dRepository li4dRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BackendService(ChoiceRepository choiceRepository, UserRepository userRepository, Li4dRepository li4dRepository) {
+    public BackendService(ChoiceRepository choiceRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
         this.choiceRepository = choiceRepository;
         this.userRepository = userRepository;
-        this.li4dRepository = li4dRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public ResponseModel<Void> insertLi4d(Li4dModel model) {
+    public ResponseModel<Void> userLogin(UserModel model) {
         ResponseModel<Void> res = new ResponseModel<>();
         res.setDescription("created");
         res.setStatus(201);
         try {
-            Optional<Li4dEntity> optional = this.li4dRepository.findByLi4dName(model.getLi4dName());
-            if (optional.isEmpty()){
-            Li4dEntity e = new Li4dEntity();
-            e.setLi4dName(model.getLi4dName());
-            e.setLi4dDescriptionEn(model.getLi4dDescriptionEn());
-            e.setLi4dDescriptionTh(model.getLi4dDescriptionTh());
-            this.li4dRepository.save(e);}else {
-                res.setDescription("haded it before");
-                res.setStatus(403);
-            }
-        }catch (Exception ex){
-            ex.printStackTrace();
-            res.setStatus(500);
-            res.setDescription(ex.getMessage());
-        }
-
-
-        return res;
-    }
-
-    public ResponseModel<Void> insertChoices(List<ChoiceModel> modelList) {
-        ResponseModel<Void> res = new ResponseModel<>();
-        res.setDescription("created");
-        res.setStatus(201);
-        try {
-            List<ChoiceEntity> choices = new ArrayList<>();
-            for (ChoiceModel m:modelList){
-                try {
-                    Optional<ChoiceEntity> optional = this.choiceRepository.findByChoiceNameEn(m.getChoiceNameEn());
-                    Optional<Li4dEntity> optionalLi4d = this.li4dRepository.findById(m.getLi4dId());
-                    if (optional.isEmpty()&optionalLi4d.isPresent()){
-                        Li4dEntity li4d = optionalLi4d.get();
-                        ChoiceEntity e = new ChoiceEntity();
-                        e.setChoiceNameTh(m.getChoiceNameTh());
-                        e.setChoiceNameEn(m.getChoiceNameEn());
-                        e.setLi4dc(li4d);
-                        choices.add(e);
-                    }else {
-                        log.info("haded "+m.getChoiceNameEn()+" before");}
-                }catch (Exception ex){
-                    log.info(ex.getMessage());
-                }
-            }
-            this.choiceRepository.saveAll(choices);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            res.setStatus(500);
-            res.setDescription(ex.getMessage());
-        }
-        return res;
-    }
-
-    public ResponseModel<Void> insertUser(UserModel model) {
-        ResponseModel<Void> res = new ResponseModel<>();
-        res.setDescription("created");
-        res.setStatus(201);
-        try {
-            Optional<UserEntity> optional = this.userRepository.findByUserEmail(model.getUserEmail());
+            Optional<UserEntity> optional = this.userRepository.findByEmail(model.getEmail());
             if (optional.isPresent()){
                 UserEntity entity = optional.get();
-                if(entity.getLi4du()==null){
+                if(entity.getCategoryU()==null){
                     res.setStatus(200);
                     res.setDescription(null);
                 }else {
                     res.setStatus(200);
-                    res.setDescription(entity.getLi4du().getLi4dName());
+                    res.setDescription(entity.getCategoryU().getName());
                 }
             }else {
                 UserEntity entity = new UserEntity();
-                entity.setUserEmail(model.getUserEmail());
-                entity.setUserFirstName(model.getUserFirstName());
-                entity.setUserLastName(model.getUserLastName());
-                entity.setUserImage(model.getUserImage());
-                entity.setUserAge(model.getUserAge());
-                entity.setUserGender(model.getUserGender());
+                entity.setFirstName(model.getFirstName());
+                entity.setLastName(model.getLastName());
+                entity.setEmail(model.getEmail());
+                entity.setImage(model.getImage());
+                entity.setBirthdays(model.getBirthdays());
+                entity.setGender(model.getGender());
                 this.userRepository.save(entity);
             }
         }catch (Exception ex){
@@ -118,52 +62,38 @@ public class BackendService {
         return res;
     }
 
+    public List<HistoryModel> getAllUserHistory(String email) {
+        Optional<UserEntity> optional = userRepository.findByEmail(email);
+        if (optional.isPresent()) {
+            List<HistoryEntity> list = optional.get().getHistoryList();
+            List<HistoryModel> models = new ArrayList<>();
+            for (HistoryEntity e : list) {
+                HistoryModel m = new HistoryModel();
+                m.setLike(e.getLike());
+                m.setDislike(e.getDislike());
+                m.setDate(e.getDate());
+                m.setUserId(e.getUserH().getId());
+                m.setCategoryId(e.getCategoryH().getId());
+                models.add(m);
+            }
+            return models;
+        }else {return null;}
+    }
+
     public List<ChoiceModel> findAllChoices() {
         List<ChoiceEntity> list = this.choiceRepository.findAll();
         List<ChoiceModel> models = new ArrayList<>();
         for (ChoiceEntity e : list){
             ChoiceModel m = new ChoiceModel();
-            m.setChoiceId(e.getChoiceId());
-            m.setChoiceNameTh(e.getChoiceNameTh());
-            m.setChoiceNameEn(e.getChoiceNameEn());
+            m.setId(e.getId());
+            m.setNameTh(e.getNameTh());
+            m.setNameEn(e.getNameEn());
             models.add(m);
         }
         return models;
     }
 
-    public List<Li4dModel> findAllLi4d() {
-        List<Li4dEntity> list = this.li4dRepository.findAll();
-        List<Li4dModel> models = new ArrayList<>();
-        for (Li4dEntity e:list){
-            Li4dModel m = new Li4dModel();
-            m.setLi4dId(e.getLi4dId());
-            m.setLi4dName(e.getLi4dName());
-            m.setLi4dDescriptionTh(e.getLi4dDescriptionTh());
-            m.setLi4dDescriptionEn(e.getLi4dDescriptionEn());
-            models.add(m);
-        }
-        return models;
-    }
-
-    public List<UserModel> findAllUsers(){
-        List<UserEntity> list = this.userRepository.findAll();
-        List<UserModel> models = new ArrayList<>();
-        for (UserEntity e:list){
-            UserModel m = new UserModel();
-            m.setUserId(e.getUserId());
-            m.setUserFirstName(e.getUserFirstName());
-            m.setUserLastName(e.getUserLastName());
-            m.setUserEmail(e.getUserEmail());
-            m.setUserAge(e.getUserAge());
-            m.setUserImage(e.getUserImage());
-            m.setUserGender(e.getUserGender());
-            m.setLi4dId(e.getLi4du().getLi4dId());
-            models.add(m);
-        }
-        return models;
-    }
-
-    public ResponseModel<Void> userData(DataModel model) {
+    public ResponseModel<Void> getResult(DataModel model) {
         ResponseModel<Void> res = new ResponseModel<>();
         res.setStatus(200);
         res.setDescription("success");
@@ -172,7 +102,7 @@ public class BackendService {
             int r2=0;
             int r3=0;
             int r4=0;
-            Optional<UserEntity> optional = this.userRepository.findByUserEmail(model.getUserEmail());
+            Optional<UserEntity> optional = this.userRepository.findByEmail(model.getUserEmail());
             if (optional.isPresent()){
                 UserEntity entity = optional.get();
                 int role =0;
@@ -213,50 +143,58 @@ public class BackendService {
                 }
                 switch (res.getDescription()) {
                     case "Bull" -> {
-                        Optional<Li4dEntity> optionalLi4d = this.li4dRepository.findById(1);
-                        if (optionalLi4d.isPresent()) {
-                            Li4dEntity li4d = optionalLi4d.get();
-                            entity.setLi4du(li4d);
+                        Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(1);
+                        if (optionalCategory.isPresent()) {
+                            CategoryEntity category = optionalCategory.get();
+                            entity.setCategoryU(category);
                             this.userRepository.save(entity);
                         } else {
-                            res.setDescription("can't find li4d : 1");
+                            res.setStatus(500);
+                            res.setDescription("Database error");
+                            log.info("get result error : can't find category : 1");
                         }
                     }
                     case "Rat" -> {
-                        Optional<Li4dEntity> optionalLi4d = this.li4dRepository.findById(2);
-                        if (optionalLi4d.isPresent()) {
-                            Li4dEntity li4d = optionalLi4d.get();
-                            entity.setLi4du(li4d);
+                        Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(2);
+                        if (optionalCategory.isPresent()) {
+                            CategoryEntity category = optionalCategory.get();
+                            entity.setCategoryU(category);
                             this.userRepository.save(entity);
                         } else {
-                            res.setDescription("can't find li4d : 2");
+                            res.setStatus(500);
+                            res.setDescription("Database error");
+                            log.info("get result error : can't find category : 2");
                         }
                     }
                     case "Bear" -> {
-                        Optional<Li4dEntity> optionalLi4d = this.li4dRepository.findById(3);
-                        if (optionalLi4d.isPresent()) {
-                            Li4dEntity li4d = optionalLi4d.get();
-                            entity.setLi4du(li4d);
+                        Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(3);
+                        if (optionalCategory.isPresent()) {
+                            CategoryEntity category = optionalCategory.get();
+                            entity.setCategoryU(category);
                             this.userRepository.save(entity);
                         } else {
-                            res.setDescription("can't find li4d : 3");
+                            res.setStatus(500);
+                            res.setDescription("Database error");
+                            log.info("get result error : can't find category : 3");
                         }
                     }
                     case "Falcon" -> {
-                        Optional<Li4dEntity> optionalLi4d = this.li4dRepository.findById(4);
-                        if (optionalLi4d.isPresent()) {
-                            Li4dEntity li4d = optionalLi4d.get();
-                            entity.setLi4du(li4d);
+                        Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(4);
+                        if (optionalCategory.isPresent()) {
+                            CategoryEntity category = optionalCategory.get();
+                            entity.setCategoryU(category);
                             this.userRepository.save(entity);
                         } else {
-                            res.setDescription("can't find li4d : 4");
+                            res.setStatus(500);
+                            res.setDescription("Database error");
+                            log.info("get result error : can't find category : 4");
                         }
                     }
                 }
 
             }else {
                 res.setStatus(403);
-                res.setDescription(model.toString());
+                res.setDescription("Email is wrong");
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -266,45 +204,22 @@ public class BackendService {
         return res;
     }
 
-    public ResponseModel<Void> resetResponse(String userEmail) {
-        ResponseModel<Void> res = new ResponseModel<>();
-        res.setStatus(200);
-        res.setDescription("success");
-        try {
-            Optional<UserEntity> optional = this.userRepository.findByUserEmail(userEmail);
-            if(optional.isPresent()){
-                UserEntity entity = optional.get();
-                entity.setLi4du(null);
-                this.userRepository.save(entity);
-            }else {
-                res.setStatus(403);
-                res.setDescription("user not found");
-            }
-        }catch (Exception ex){
-            ex.printStackTrace();
-            res.setStatus(500);
-            res.setDescription(ex.getMessage());
-        }
-        return res;
-    }
-
-
-    public List<PercentLi4dModel> findAllPercentResponse() {
+    public List<OverviewModel> getOverview() {
         float bull=0,rat=0,bear=0,falcon=0;
         DecimalFormat df = new DecimalFormat("#,##");
         List<UserEntity> entityList = this.userRepository.findAll();
         for (UserEntity e:entityList){
-            if(e.getLi4du().getLi4dName().equals("Bull")){bull++;}
-            if(e.getLi4du().getLi4dName().equals("Rat")){rat++;}
-            if(e.getLi4du().getLi4dName().equals("Bear")){bear++;}
-            if(e.getLi4du().getLi4dName().equals("Falcon")){falcon++;}
+            if(e.getCategoryU().getName().equals("Bull")){bull++;}
+            if(e.getCategoryU().getName().equals("Rat")){rat++;}
+            if(e.getCategoryU().getName().equals("Bear")){bear++;}
+            if(e.getCategoryU().getName().equals("Falcon")){falcon++;}
         }
 
-        List<PercentLi4dModel> models = new ArrayList<>();
-        PercentLi4dModel bullModel = new PercentLi4dModel();
-        PercentLi4dModel ratModel = new PercentLi4dModel();
-        PercentLi4dModel bearModel = new PercentLi4dModel();
-        PercentLi4dModel falconModel = new PercentLi4dModel();
+        List<OverviewModel> models = new ArrayList<>();
+        OverviewModel bullModel = new OverviewModel();
+        OverviewModel ratModel = new OverviewModel();
+        OverviewModel bearModel = new OverviewModel();
+        OverviewModel falconModel = new OverviewModel();
 
         bullModel.setName("Bull");
         bullModel.setPercent(df.format((bull * 100) / entityList.size())+"%");
