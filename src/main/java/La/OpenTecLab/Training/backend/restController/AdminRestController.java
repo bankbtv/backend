@@ -2,6 +2,7 @@ package La.OpenTecLab.Training.backend.restController;
 
 import La.OpenTecLab.Training.backend.entity.CategoryEntity;
 import La.OpenTecLab.Training.backend.entity.ChoiceEntity;
+import La.OpenTecLab.Training.backend.entity.HistoryEntity;
 import La.OpenTecLab.Training.backend.entity.UserEntity;
 import La.OpenTecLab.Training.backend.model.CategoryModel;
 import La.OpenTecLab.Training.backend.model.ChoiceModel;
@@ -31,6 +32,9 @@ public class AdminRestController {
 
     @PostMapping("/find/all/choice")
     public List<ChoiceEntity> adminFindAllChoice(){return this.adminServer.adminFindAllChoice();}
+
+    @PostMapping("/find/all/history")
+    public List<HistoryEntity> findAllHistory(){return this.adminServer.findAllHistory();}
 
 
     @PostMapping("/update/category")

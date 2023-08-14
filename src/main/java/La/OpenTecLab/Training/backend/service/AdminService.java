@@ -2,18 +2,18 @@ package La.OpenTecLab.Training.backend.service;
 
 import La.OpenTecLab.Training.backend.entity.CategoryEntity;
 import La.OpenTecLab.Training.backend.entity.ChoiceEntity;
+import La.OpenTecLab.Training.backend.entity.HistoryEntity;
 import La.OpenTecLab.Training.backend.entity.UserEntity;
 import La.OpenTecLab.Training.backend.model.CategoryModel;
 import La.OpenTecLab.Training.backend.model.ChoiceModel;
 import La.OpenTecLab.Training.backend.model.ResponseModel;
-import La.OpenTecLab.Training.backend.model.UserModel;
 import La.OpenTecLab.Training.backend.repository.CategoryRepository;
 import La.OpenTecLab.Training.backend.repository.ChoiceRepository;
+import La.OpenTecLab.Training.backend.repository.HistoryRepository;
 import La.OpenTecLab.Training.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,11 +24,13 @@ public class AdminService {
     private final CategoryRepository categoryRepository;
     private final ChoiceRepository choiceRepository;
     private final UserRepository userRepository;
+    private final HistoryRepository historyRepository;
 
-    public AdminService(CategoryRepository categoryRepository, ChoiceRepository choiceRepository, UserRepository userRepository) {
+    public AdminService(CategoryRepository categoryRepository, ChoiceRepository choiceRepository, UserRepository userRepository, HistoryRepository historyRepository) {
         this.categoryRepository = categoryRepository;
         this.choiceRepository = choiceRepository;
         this.userRepository = userRepository;
+        this.historyRepository = historyRepository;
     }
 
     public ResponseModel<Void> updateCategory(CategoryModel model) {
@@ -94,4 +96,7 @@ public class AdminService {
         return this.choiceRepository.findAll();
     }
 
+    public List<HistoryEntity> findAllHistory() {
+        return this.historyRepository.findAll();
+    }
 }
