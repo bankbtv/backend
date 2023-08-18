@@ -1,16 +1,16 @@
 package La.OpenTecLab.Training.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Data
 public class HistoryModel {
     private Integer id;
-    private JsonIgnore like;
-    private JsonIgnore dislike;
-    private Date date;
+    private ArrayList<Integer> likes;
+    private ArrayList<Integer> dislikes;
+    private LocalDateTime dates;
     private Integer userId;
-    private Integer categoryId;
+    private String categoryName;
 }

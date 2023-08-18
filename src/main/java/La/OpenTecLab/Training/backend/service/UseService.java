@@ -7,26 +7,32 @@ import La.OpenTecLab.Training.backend.entity.UserEntity;
 import La.OpenTecLab.Training.backend.model.*;
 import La.OpenTecLab.Training.backend.repository.CategoryRepository;
 import La.OpenTecLab.Training.backend.repository.ChoiceRepository;
+import La.OpenTecLab.Training.backend.repository.HistoryRepository;
 import La.OpenTecLab.Training.backend.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class BackendService {
+public class UseService {
     private final ChoiceRepository choiceRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final HistoryRepository historyRepository;
 
-    public BackendService(ChoiceRepository choiceRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
+    public UseService(ChoiceRepository choiceRepository, UserRepository userRepository, CategoryRepository categoryRepository, HistoryRepository historyRepository) {
         this.choiceRepository = choiceRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.historyRepository = historyRepository;
     }
 
     public ResponseModel<Void> userLogin(UserModel model) {
@@ -67,14 +73,26 @@ public class BackendService {
         if (optional.isPresent()) {
             List<HistoryEntity> list = optional.get().getHistoryList();
             List<HistoryModel> models = new ArrayList<>();
+            int i =1;
             for (HistoryEntity e : list) {
                 HistoryModel m = new HistoryModel();
-                m.setLike(e.getLike());
-                m.setDislike(e.getDislike());
-                m.setDate(e.getDate());
-                m.setUserId(e.getUserH().getId());
-                m.setCategoryId(e.getCategoryH().getId());
+                //Convert String to json array
+                JSONArray jsonLike = new JSONArray(e.getLikes());
+                JSONArray jsonDislike = new JSONArray(e.getDislikes());
+                //create and set arraylist
+                ArrayList<Integer> likeList = new ArrayList<>();
+                ArrayList<Integer> dislikeList = new ArrayList<>();
+                for (int j = 0; j < jsonLike.length(); j++) {likeList.add(jsonLike.getInt(j));}
+                for (int j = 0; j < jsonDislike.length(); j++) {dislikeList.add(jsonDislike.getInt(j));}
+
+                m.setId(i);
+                m.setLikes(likeList);
+                m.setDislikes(dislikeList);
+                m.setDates(e.getDates());
+                m.setUserId(e.getUserH().getUserId());
+                m.setCategoryName(e.getCategoryH().getName());
                 models.add(m);
+                i++;
             }
             return models;
         }else {return null;}
@@ -85,7 +103,7 @@ public class BackendService {
         List<ChoiceModel> models = new ArrayList<>();
         for (ChoiceEntity e : list){
             ChoiceModel m = new ChoiceModel();
-            m.setId(e.getId());
+            m.setId(e.getChoiceId());
             m.setNameTh(e.getNameTh());
             m.setNameEn(e.getNameEn());
             models.add(m);
@@ -103,23 +121,31 @@ public class BackendService {
             int r3=0;
             int r4=0;
             Optional<UserEntity> optional = this.userRepository.findByEmail(model.getUserEmail());
+            HistoryEntity history = new HistoryEntity();
+            ObjectMapper mapper = new ObjectMapper();
             if (optional.isPresent()){
+                history.setDates(LocalDateTime.now());
+                history.setUserH(optional.get());
                 UserEntity entity = optional.get();
                 int role =0;
                 for (ArrayList<Integer> a: model.getUserData() ){
                     if(role==0){
+                        history.setLikes(mapper.writeValueAsString(a));
                         for (Integer b:a){
                             if(b<=21){r1=r1+1;}
                             if(b>=22&b<=42){r2=r2+1;}
                             if(b>=43&b<=63){r3=r3+1;}
                             if(b>=64){r4=r4+1;}
                         }
-                    }else {for (Integer b:a){
-                        if(b<=21){r1=r1-1;}
-                        if(b>=22&b<=42){r2=r2-1;}
-                        if(b>=43&b<=63){r3=r3-1;}
-                        if(b>=64){r4=r4-1;}
-                    }}
+                    }else {
+                        history.setDislikes(mapper.writeValueAsString(a));
+                        for (Integer b:a){
+                            if(b<=21){r1=r1-1;}
+                            if(b>=22&b<=42){r2=r2-1;}
+                            if(b>=43&b<=63){r3=r3-1;}
+                            if(b>=64){r4=r4-1;}
+                        }
+                    }
                     role=role+1;
                 }
                 int max = 0;
@@ -148,6 +174,8 @@ public class BackendService {
                             CategoryEntity category = optionalCategory.get();
                             entity.setCategoryU(category);
                             this.userRepository.save(entity);
+                            history.setCategoryH(category);
+                            this.historyRepository.save(history);
                         } else {
                             res.setStatus(500);
                             res.setDescription("Database error");
@@ -160,6 +188,8 @@ public class BackendService {
                             CategoryEntity category = optionalCategory.get();
                             entity.setCategoryU(category);
                             this.userRepository.save(entity);
+                            history.setCategoryH(category);
+                            this.historyRepository.save(history);
                         } else {
                             res.setStatus(500);
                             res.setDescription("Database error");
@@ -172,6 +202,8 @@ public class BackendService {
                             CategoryEntity category = optionalCategory.get();
                             entity.setCategoryU(category);
                             this.userRepository.save(entity);
+                            history.setCategoryH(category);
+                            this.historyRepository.save(history);
                         } else {
                             res.setStatus(500);
                             res.setDescription("Database error");
@@ -184,6 +216,8 @@ public class BackendService {
                             CategoryEntity category = optionalCategory.get();
                             entity.setCategoryU(category);
                             this.userRepository.save(entity);
+                            history.setCategoryH(category);
+                            this.historyRepository.save(history);
                         } else {
                             res.setStatus(500);
                             res.setDescription("Database error");
@@ -191,6 +225,8 @@ public class BackendService {
                         }
                     }
                 }
+
+
 
             }else {
                 res.setStatus(403);
@@ -206,7 +242,7 @@ public class BackendService {
 
     public List<OverviewModel> getOverview() {
         float bull=0,rat=0,bear=0,falcon=0;
-        DecimalFormat df = new DecimalFormat("#,##");
+        DecimalFormat df = new DecimalFormat("0");
         List<UserEntity> entityList = this.userRepository.findAll();
         for (UserEntity e:entityList){
             if(e.getCategoryU().getName().equals("Bull")){bull++;}
@@ -223,18 +259,33 @@ public class BackendService {
 
         bullModel.setName("Bull");
         bullModel.setPercent(df.format((bull * 100) / entityList.size())+"%");
+        bullModel.setPeople(entityList.size());
         models.add(bullModel);
         ratModel.setName("Rat");
         ratModel.setPercent(df.format((rat * 100) / entityList.size())+"%");
+        ratModel.setPeople(entityList.size());
         models.add(ratModel);
         bearModel.setName("Bear");
         bearModel.setPercent(df.format((bear * 100) / entityList.size())+"%");
+        bearModel.setPeople(entityList.size());
         models.add(bearModel);
         falconModel.setName("Falcon");
         falconModel.setPercent(df.format((falcon * 100) / entityList.size())+"%");
+        falconModel.setPeople(entityList.size());
         models.add(falconModel);
 
         return models;
     }
 
+    public CategoryModel getCategory(String name) {
+        Optional<CategoryEntity> optional = this.categoryRepository.findByName(name);
+        if(optional.isPresent()){
+            CategoryEntity e = optional.get();
+            CategoryModel m = new CategoryModel();
+            m.setName(e.getName());
+            m.setDescriptionTh(e.getDescriptionTh());
+            m.setDescriptionEn(e.getDescriptionEn());
+            return m;
+        }else return null;
+    }
 }

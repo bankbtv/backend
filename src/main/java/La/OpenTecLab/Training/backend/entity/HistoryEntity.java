@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -12,16 +12,16 @@ import java.util.Date;
 public class HistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private JsonIgnore like;
-    private JsonIgnore dislike;
-    private Date date;
+    private Integer historyId;
+    private String likes;
+    private String dislikes;
+    private LocalDateTime dates;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="userId")
     @JsonIgnore
     private UserEntity userH;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="categoryId")
     @JsonIgnore
     private CategoryEntity categoryH;
 }

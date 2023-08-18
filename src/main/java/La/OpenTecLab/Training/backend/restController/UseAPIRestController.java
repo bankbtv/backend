@@ -1,7 +1,7 @@
 package La.OpenTecLab.Training.backend.restController;
 
 import La.OpenTecLab.Training.backend.model.*;
-import La.OpenTecLab.Training.backend.service.BackendService;
+import La.OpenTecLab.Training.backend.service.UseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api")
 public class UseAPIRestController {
-    private final BackendService backendServer;
+    private final UseService backendServer;
 
-    public UseAPIRestController(BackendService backendServer) {
+    public UseAPIRestController(UseService backendServer) {
         this.backendServer = backendServer;
     }
 
@@ -32,5 +32,7 @@ public class UseAPIRestController {
 
     @GetMapping("/get/overview")
     public List<OverviewModel> getOverview(){return this.backendServer.getOverview();}
+    @GetMapping("/get/category")
+    public CategoryModel getCategory(@RequestParam String name){return this.backendServer.getCategory(name);}
 
 }

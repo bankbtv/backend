@@ -10,11 +10,13 @@ import lombok.Data;
 public class ChoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer choiceId;
     private String nameTh;
     private String nameEn;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="categoryId")
+//    to add category to choices,users and history
+//    @JsonProperty("categoryC")
     @JsonIgnore
     private CategoryEntity categoryC;
 }
