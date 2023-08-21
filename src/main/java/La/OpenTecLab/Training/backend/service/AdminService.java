@@ -41,11 +41,10 @@ public class AdminService {
             Optional<CategoryEntity> optional = this.categoryRepository.findById(model.getId());
             if (optional.isPresent()){
                 CategoryEntity e = new CategoryEntity();
-                e.setCategoryId(model.getId());
-                e.setNameTh(model.getNameTh());
-                e.setNameEn(model.getNameEn());
-                e.setBehaviorTh(model.getBehaviorTh());
-                e.setBehaviorEn(model.getBehaviorEn());
+                if(model.getNameTh() != null){e.setNameTh(model.getNameTh());}
+                if(model.getNameEn() != null){e.setNameEn(model.getNameEn());}
+                if(model.getBehaviorTh() != null){e.setBehaviorTh(model.getBehaviorTh());}
+                if(model.getBehaviorEn() != null){e.setBehaviorEn(model.getBehaviorEn());}
                 this.categoryRepository.save(e);}else {
                 res.setDescription("The Category is wrong");
                 res.setStatus(403);
@@ -69,8 +68,8 @@ public class AdminService {
             if(optionalChoice.isPresent()){
                 if(optionalCategory.isPresent()){
                     ChoiceEntity e = optionalChoice.get();
-                    e.setNameEn(model.getNameEn());
-                    e.setNameTh(model.getNameTh());
+                    if(model.getNameEn() != null){e.setNameEn(model.getNameEn());}
+                    if(model.getNameTh() != null){e.setNameTh(model.getNameTh());}
                     e.setCategoryC(optionalCategory.get());
                     this.choiceRepository.save(e);
                 }else {
