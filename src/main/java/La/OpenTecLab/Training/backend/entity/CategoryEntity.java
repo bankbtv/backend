@@ -15,9 +15,10 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryId;
-    private String name;
-    private String descriptionTh;
-    private String descriptionEn;
+    private String nameEn;
+    private String nameTh;
+    private String behaviorTh;
+    private String behaviorEn;
 //    to add category to choices,users and history
     @JsonIgnore
     @OneToMany(mappedBy = "categoryC", fetch= FetchType.LAZY)

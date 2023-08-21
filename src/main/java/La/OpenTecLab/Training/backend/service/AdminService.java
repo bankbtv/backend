@@ -42,9 +42,10 @@ public class AdminService {
             if (optional.isPresent()){
                 CategoryEntity e = new CategoryEntity();
                 e.setCategoryId(model.getId());
-                e.setName(model.getName());
-                e.setDescriptionEn(model.getDescriptionEn());
-                e.setDescriptionTh(model.getDescriptionTh());
+                e.setNameTh(model.getNameTh());
+                e.setNameEn(model.getNameEn());
+                e.setBehaviorTh(model.getBehaviorTh());
+                e.setBehaviorEn(model.getBehaviorEn());
                 this.categoryRepository.save(e);}else {
                 res.setDescription("The Category is wrong");
                 res.setStatus(403);
@@ -142,7 +143,7 @@ public class AdminService {
             m.setDislikes(dislikeList);
             m.setDates(e.getDates());
             m.setUserId(e.getUserH().getUserId());
-            m.setCategoryName(e.getCategoryH().getName());
+            m.setCategoryId(e.getCategoryH().getCategoryId());
             models.add(m);
         }
         return models;

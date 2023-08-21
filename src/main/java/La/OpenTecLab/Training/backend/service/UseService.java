@@ -48,7 +48,7 @@ public class UseService {
                     res.setDescription(null);
                 }else {
                     res.setStatus(200);
-                    res.setDescription(entity.getCategoryU().getName());
+                    res.setDescription(entity.getCategoryU().getCategoryId().toString());
                 }
             }else {
                 UserEntity entity = new UserEntity();
@@ -90,7 +90,7 @@ public class UseService {
                 m.setDislikes(dislikeList);
                 m.setDates(e.getDates());
                 m.setUserId(e.getUserH().getUserId());
-                m.setCategoryName(e.getCategoryH().getName());
+                m.setCategoryId(e.getCategoryH().getCategoryId());
                 models.add(m);
                 i++;
             }
@@ -245,10 +245,10 @@ public class UseService {
         DecimalFormat df = new DecimalFormat("0");
         List<UserEntity> entityList = this.userRepository.findAll();
         for (UserEntity e:entityList){
-            if(e.getCategoryU().getName().equals("Bull")){bull++;}
-            if(e.getCategoryU().getName().equals("Rat")){rat++;}
-            if(e.getCategoryU().getName().equals("Bear")){bear++;}
-            if(e.getCategoryU().getName().equals("Falcon")){falcon++;}
+            if(e.getCategoryU().getCategoryId().equals(1)){bull++;}
+            if(e.getCategoryU().getCategoryId().equals(2)){rat++;}
+            if(e.getCategoryU().getCategoryId().equals(3)){bear++;}
+            if(e.getCategoryU().getCategoryId().equals(4)){falcon++;}
         }
 
         List<OverviewModel> models = new ArrayList<>();
@@ -277,14 +277,16 @@ public class UseService {
         return models;
     }
 
-    public CategoryModel getCategory(String name) {
-        Optional<CategoryEntity> optional = this.categoryRepository.findByName(name);
+    public CategoryModel getCategory(Integer id) {
+        Optional<CategoryEntity> optional = this.categoryRepository.findById(id);
         if(optional.isPresent()){
             CategoryEntity e = optional.get();
             CategoryModel m = new CategoryModel();
-            m.setName(e.getName());
-            m.setDescriptionTh(e.getDescriptionTh());
-            m.setDescriptionEn(e.getDescriptionEn());
+            m.setId(e.getCategoryId());
+            m.setNameTh(e.getNameTh());
+            m.setNameEn(e.getNameEn());
+            m.setBehaviorTh(e.getBehaviorTh());
+            m.setBehaviorEn(e.getBehaviorEn());
             return m;
         }else return null;
     }

@@ -12,5 +12,5 @@ public class HistoryModel {
     private ArrayList<Integer> dislikes;
     private LocalDateTime dates;
     private Integer userId;
-    private String categoryName;
+    private Integer categoryId;
 }

@@ -34,6 +34,6 @@ public class UseAPIRestController {
     public List<OverviewModel> getOverview(){return this.backendServer.getOverview();}
 
     @GetMapping("/get/category")
-    public CategoryModel getCategory(@RequestParam String name){return this.backendServer.getCategory(name);}
+    public CategoryModel getCategory(@RequestParam Integer id){return this.backendServer.getCategory(id);}
 
 }

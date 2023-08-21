@@ -6,7 +6,8 @@ import lombok.Data;
 public class CategoryModel {
 
     private Integer id;
-    private String name;
-    private String descriptionTh;
-    private String descriptionEn;
+    private String nameEn;
+    private String nameTh;
+    private String behaviorTh;
+    private String behaviorEn;
 }
