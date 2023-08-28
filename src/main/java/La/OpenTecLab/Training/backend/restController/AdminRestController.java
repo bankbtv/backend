@@ -35,6 +35,9 @@ public class AdminRestController {
     @PostMapping("/update/choice")
     public ResponseModel<Void> updateChoices(@RequestBody ChoiceModel model){return this.adminServer.updateChoices(model);}
 
+    @GetMapping("/test")
+    public ResponseModel<Void> testNative(@RequestParam Integer id){return this.adminServer.testNative(id);}
+
 
 
 }

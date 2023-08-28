@@ -24,9 +24,11 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "categoryC", fetch= FetchType.LAZY)
     private List<ChoiceEntity> choices;
 //    to add category to choices,users and history
+
     @JsonIgnore
     @OneToMany(mappedBy = "categoryU",fetch = FetchType.LAZY)
     private List<UserEntity> users;
+
 //    to add category to choices,users and history
     @JsonIgnore
     @OneToMany(mappedBy = "categoryH", fetch= FetchType.LAZY)

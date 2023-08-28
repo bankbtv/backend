@@ -53,11 +53,11 @@ public class UseService {
             }else {
                 UserEntity entity = new UserEntity();
                 entity.setFirstName(model.getFirstName());
-                entity.setLastName(model.getLastName());
+                if(model.getLastName()!=null){entity.setLastName(model.getLastName());}else {entity.setLastName("null");}
                 entity.setEmail(model.getEmail());
                 entity.setImage(model.getImage());
-                entity.setBirthdays(model.getBirthdays());
-                entity.setGender(model.getGender());
+                if(model.getBirthdays()!=null){entity.setBirthdays(model.getBirthdays());}
+                if(model.getGender()!=null){entity.setGender(model.getGender());}
                 this.userRepository.save(entity);
             }
         }catch (Exception ex){
@@ -75,6 +75,7 @@ public class UseService {
             List<HistoryModel> models = new ArrayList<>();
             int i =1;
             for (HistoryEntity e : list) {
+                if(i==51){break;}
                 HistoryModel m = new HistoryModel();
                 //Convert String to json array
                 JSONArray jsonLike = new JSONArray(e.getLikes());
@@ -152,23 +153,23 @@ public class UseService {
                 for (int i=0;i<4;i++){
                     if(i==0&max<r1){
                         max = r1;
-                        res.setDescription("Bull");
+                        res.setDescription("1");
                     }
                     if(i==1&max<r2){
                         max = r2;
-                        res.setDescription("Rat");
+                        res.setDescription("2");
                     }
                     if(i==2&max<r3){
                         max = r3;
-                        res.setDescription("Bear");
+                        res.setDescription("3");
                     }
                     if(i==3&max<r4){
                         max = r4;
-                        res.setDescription("Falcon");
+                        res.setDescription("4");
                     }
                 }
                 switch (res.getDescription()) {
-                    case "Bull" -> {
+                    case "1" -> {
                         Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(1);
                         if (optionalCategory.isPresent()) {
                             CategoryEntity category = optionalCategory.get();
@@ -182,7 +183,7 @@ public class UseService {
                             log.info("get result error : can't find category : 1");
                         }
                     }
-                    case "Rat" -> {
+                    case "2" -> {
                         Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(2);
                         if (optionalCategory.isPresent()) {
                             CategoryEntity category = optionalCategory.get();
@@ -196,7 +197,7 @@ public class UseService {
                             log.info("get result error : can't find category : 2");
                         }
                     }
-                    case "Bear" -> {
+                    case "3" -> {
                         Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(3);
                         if (optionalCategory.isPresent()) {
                             CategoryEntity category = optionalCategory.get();
@@ -210,7 +211,7 @@ public class UseService {
                             log.info("get result error : can't find category : 3");
                         }
                     }
-                    case "Falcon" -> {
+                    case "4" -> {
                         Optional<CategoryEntity> optionalCategory = this.categoryRepository.findById(4);
                         if (optionalCategory.isPresent()) {
                             CategoryEntity category = optionalCategory.get();
@@ -245,10 +246,11 @@ public class UseService {
         DecimalFormat df = new DecimalFormat("0");
         List<UserEntity> entityList = this.userRepository.findAll();
         for (UserEntity e:entityList){
+            if(e.getCategoryU()!=null){
             if(e.getCategoryU().getCategoryId().equals(1)){bull++;}
             if(e.getCategoryU().getCategoryId().equals(2)){rat++;}
             if(e.getCategoryU().getCategoryId().equals(3)){bear++;}
-            if(e.getCategoryU().getCategoryId().equals(4)){falcon++;}
+            if(e.getCategoryU().getCategoryId().equals(4)){falcon++;}}
         }
 
         List<OverviewModel> models = new ArrayList<>();
@@ -277,16 +279,16 @@ public class UseService {
         return models;
     }
 
-    public CategoryModel getCategory(Integer id) {
-        Optional<CategoryEntity> optional = this.categoryRepository.findById(id);
+    public CategoryModel getCategory(String id) {
+        Optional<CategoryEntity> optional = this.categoryRepository.findById(Integer.valueOf(id));
         if(optional.isPresent()){
             CategoryEntity e = optional.get();
             CategoryModel m = new CategoryModel();
-            m.setId(e.getCategoryId());
-            m.setNameTh(e.getNameTh());
-            m.setNameEn(e.getNameEn());
             m.setBehaviorTh(e.getBehaviorTh());
             m.setBehaviorEn(e.getBehaviorEn());
+            m.setNameTh(e.getNameTh());
+            m.setNameEn(e.getNameEn());
+            m.setId(e.getCategoryId());
             return m;
         }else return null;
     }

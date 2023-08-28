@@ -9,6 +9,8 @@ import La.OpenTecLab.Training.backend.repository.CategoryRepository;
 import La.OpenTecLab.Training.backend.repository.ChoiceRepository;
 import La.OpenTecLab.Training.backend.repository.HistoryRepository;
 import La.OpenTecLab.Training.backend.repository.UserRepository;
+import La.OpenTecLab.Training.backend.test.TestNativeEntity;
+import La.OpenTecLab.Training.backend.test.TestNativeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,14 @@ public class AdminService {
     private final ChoiceRepository choiceRepository;
     private final UserRepository userRepository;
     private final HistoryRepository historyRepository;
+    private final TestNativeRepository testNAtiveRepository;
 
-    public AdminService(CategoryRepository categoryRepository, ChoiceRepository choiceRepository, UserRepository userRepository, HistoryRepository historyRepository) {
+    public AdminService(CategoryRepository categoryRepository, ChoiceRepository choiceRepository, UserRepository userRepository, HistoryRepository historyRepository, TestNativeRepository testNAtiveRepository) {
         this.categoryRepository = categoryRepository;
         this.choiceRepository = choiceRepository;
         this.userRepository = userRepository;
         this.historyRepository = historyRepository;
+        this.testNAtiveRepository = testNAtiveRepository;
     }
 
     public ResponseModel<Void> updateCategory(CategoryModel model) {
@@ -146,5 +150,13 @@ public class AdminService {
             models.add(m);
         }
         return models;
+    }
+
+    public ResponseModel<Void> testNative(Integer id) {
+        ResponseModel<Void> resp = new ResponseModel<>();
+        resp.setStatus(200);
+        TestNativeEntity userName = this.testNAtiveRepository.findUserNameById(id);
+        resp.setDescription(userName.getFirstName()+";"+userName.getLastName());
+        return resp;
     }
 }

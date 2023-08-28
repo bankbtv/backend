@@ -22,10 +22,13 @@ public class UserEntity {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date birthdays;
     private String gender;
+
     @ManyToOne
     @JoinColumn(name="categoryId")
     @JsonIgnore
     private CategoryEntity categoryU;
+
     @OneToMany(mappedBy = "userH", fetch= FetchType.EAGER)
+    @OrderBy("history_id DESC")
     private List<HistoryEntity> historyList;
 }
