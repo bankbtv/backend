@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  dataStore:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'dataStore'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3305:3306'
