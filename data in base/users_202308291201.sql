@@ -1,3 +1,4 @@
+-- do not need
 INSERT INTO dataStore.users (first_name,last_name,email,image,birthdays,gender,category_id) VALUES
 	 ('bank','BTV','btvbank06@gmail.com','https://lh3.googleusercontent.com/a/AAcHTtdEmKOcQ1qQYn_IJ0tWqs_ItanGH-H9HEsNsFHdGaZD=s96-c','2001-08-16','male',1),
 	 ('03 Mr. Phouphachan','Bouttavong com2','btvbank07@gmail.com','https://lh3.googleusercontent.com/a/AAcHTtcAJrisKbqBgbxruUbWwaAkdmvWlwNr-_wFrdPMqalcWQ=s96-c','2001-06-18','male',1),
