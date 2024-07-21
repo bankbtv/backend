@@ -1,3 +1,4 @@
+-- do not need
 INSERT INTO dataStore.user_history (likes,dislikes,dates,user_id,category_id) VALUES
 	 ('[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]','[1, 2, 3, 4, 5]','2023-08-15 12:49:52',1,1),
 	 ('[11, 52, 43, 74, 65, 26, 77, 38, 9, 80]','[21, 62, 43, 84, 75]','2023-08-15 12:52:14',2,2),
